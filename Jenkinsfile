@@ -1,3 +1,3 @@
-library 'ci-libs'
+@Library('ci-libs')
 
 buildPipeline(configFile: './build/build-config.yml')
