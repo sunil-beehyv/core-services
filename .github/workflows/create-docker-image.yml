@@ -6,65 +6,6 @@ on:
 jobs:
   docker-build-push:
     name: Build and Push Docker Images
-    strategy: 
-      matrix:
-        WORK_DIR:
-          - egov-accesscontrol
-          - egov-common-masters
-          - egov-common-masters/src/main/resources/db
-          - egov-data-uploader
-          - egov-data-uploader/src/main/resources/db
-          # - egov-enc-service
-          # - egov-enc-service/src/main/resources/db
-          # - egov-filestore
-          # - egov-filestore/src/main/resources/db
-          # - egov-idgen
-          # - egov-idgen/src/main/resources/db
-          # - egov-indexer
-          # - egov-indexer/src/main/resources/db
-          # - egov-localization
-          # - egov-localization/src/main/resources/db
-          # - egov-location
-          # - egov-location/src/main/resources/db
-          # - egov-mdms-service
-          # - egov-notification-mail
-          # - egov-notification-sms
-          # - egov-otp
-          # - egov-otp/src/main/resources/db
-          # - egov-persister
-          # - egov-pg-service
-          # - egov-pg-service/src/main/resources/db
-          # - egov-searcher
-          # - egov-telemetry
-          # - egov-user
-          # - egov-user/src/main/resources/db
-          # - egov-workflow-v2
-          # - egov-workflow-v2/src/main/resources/db
-          # - report
-          # - tenant
-          # - tenant/src/main/resources/db
-          # - user-otp
-          # - zuul
-          # - internal-gateway
-          # - egov-user-event
-          # - egov-user-event/src/main/resources/db
-          # - pdf-service
-          # - pdf-service/migration
-          # - egov-telemetry/egov-telemetry-kafka-streams
-          # - egov-telemetry/egov-telemetry-batch-process
-          # - egov-url-shortening
-          # - egov-url-shortening/src/main/resources/db
-          # - chatbot
-          # - chatbot/src/main/resources/db
-          # - http-to-kafka-connector
-          # - egov-user
-          # - mailbot
-          # - libraries/enc-client
-          # - libraries/tracer
-          # - nlp-engine
-          # - xstate-chatbot/nodejs
-          # - xstate-chatbot/nodejs/db
-          # - internal-gateway
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
@@ -76,5 +17,9 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build Docker and push Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/egov-accesscontrol:${{ github.sha }} -f ./build/maven/Dockerfile --build-arg WORK_DIR=./egov-accesscontrol .
-        docker push ${{ secrets.DOCKER_USERNAME }}/egov-accesscontrol:${{ github.sha }}
+        IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
+        for work_dir in "${microsvc[@]}"; do
+          image_name=$(echo "$work_dir" | cut -d'/' -f1)
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/$image_name:${{ github.sha }} -f ./build/maven/Dockerfile --build-arg WORK_DIR=$work_dir .
+          docker push ${{ secrets.DOCKER_USERNAME }}/$image_name:${{ github.sha }}
+        done
