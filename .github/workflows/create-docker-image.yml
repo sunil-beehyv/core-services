@@ -17,7 +17,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build Docker and push Image
       run: |
-        cat .github/MICROSERVICES_LIST/microservices_list.txt
+        # cat .github/MICROSERVICES_LIST/microservices_list.txt
         # IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
         readarray -t microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
         echo $microsvc
