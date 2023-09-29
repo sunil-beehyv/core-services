@@ -1,7 +1,6 @@
 name: "Create Docker images for microservices and push them to Docker Hub"
 
-on:
-  workflow_dispatch:
+on: [workflow_dispatch, push]
 
 jobs:
   docker-build-push:
