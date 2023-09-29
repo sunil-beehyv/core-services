@@ -20,6 +20,9 @@ jobs:
         IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
         for work_dir in "${microsvc[@]}"; do
           image_name=$(echo "$work_dir" | cut -d'/' -f1)
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/$image_name:${{ github.sha }} -f ./build/maven/Dockerfile --build-arg WORK_DIR=$work_dir .
-          docker push ${{ secrets.DOCKER_USERNAME }}/$image_name:${{ github.sha }}
+          docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f ./build/maven/Dockerfile --build-arg WORK_DIR=$work_dir .
+          docker push $DOCKER_USERNAME/$image_name:$GITHUB_SHA
         done
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        GITHUB_SHA: ${{ github.sha }}
