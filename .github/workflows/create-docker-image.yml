@@ -1,25 +1,21 @@
-name: Create Docker images for microservices and push them to Docker Hub
+name: "Create Docker images for microservices and push them to Docker Hub"
 
 on:
   workflow_dispatch:
 
 jobs:
-	build-docker-images:
-		runs_on: ubuntu
-		name: build docker images
-		steps:
-			- name: Checkout Code
-			  uses: actions/checkout@v3
-			- name: Docker Login
-			  uses: docker/login-action@v3
-			  with:
-				  username: ${{ secrets.DOCKER_USERNAME }}
-				  password: ${{ secrets.DOCKER_PASSWORD }}
-			- name: Build Docker and push Image 
-				uses: docker/build-push-action@v5
-				with:
-					context: ./core-services
-					file: {{ context }}/build/maven/Dockerfile
-					push: true
-					tags: ${{ secrets.DOCKER_USERNAME }}/core-services:${{ github.sha }}
-					WORKDIR: {{ context }}/egov-access-control/
+  docker-build-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    - name: Docker Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build Docker and push Image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/egov-accesscontrol:${{ github.sha }} -f ./build/maven/Dockerfile --build-arg WORK_DIR=./egov-accesscontrol .
+        docker push ${{ secrets.DOCKER_USERNAME }}/egov-accesscontrol:${{ github.sha }}
