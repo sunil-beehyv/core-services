@@ -19,7 +19,8 @@ jobs:
       run: |
         cat .github/MICROSERVICES_LIST/microservices_list.txt
         # IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
-        # echo $microsvc
+        readarray -t microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
+        echo $microsvc
         # for work_dir in "${microsvc[@]}"; do
         #   image_name=$(echo "$work_dir" | cut -d'/' -f1)
         #   echo $work_dir
