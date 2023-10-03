@@ -14,19 +14,43 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Build Docker and push Image
+    - name: Build and push Docker Images
       run: |
-        # cat .github/MICROSERVICES_LIST/microservices_list.txt
-        # IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
-        readarray -t microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
-        echo $microsvc
-        for work_dir in "${microsvc[@]}"; do
-          image_name=$(echo "$work_dir" | cut -d'/' -f1)
-          echo $work_dir
-          echo $image_name
-          docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f ./build/maven/Dockerfile --build-arg WORK_DIR=$work_dir .
-          docker push $DOCKER_USERNAME/$image_name:$GITHUB_SHA
-        done
+        config_file=build/build-config.yml
+        while IFS= read -r -d '' config_file; do
+          config=$(cat "$config_file")
+          name=$(echo "$config" | yq eval '.name' -)
+          
+          for build in $(echo "$config" | yq eval '.build[]' -); do
+            work_dir=$(echo "$build" | yq eval '.work-dir' -)
+            image_name=$(echo "$build" | yq eval '.image-name' -)
+            if [ -z "$dockerfile" ]; then
+              dockerfile="Dockerfile"  # Use the default Dockerfile in the same working directory
+            else
+              dockerfile=$(echo "$build" | yq eval '.dockerfile' -)
+            fi            
+            echo "Building image: $DOCKER_USERNAME/$image_name:$GITHUB_SHA"
+            
+            docker build -t "$DOCKER_USERNAME/$image_name:$GITHUB_SHA" -f "$dockerfile" --build-arg WORK_DIR=$work_dir
+          done
+        done < <(find . -name 'build/build-config.yml' -print0)
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         GITHUB_SHA: ${{ github.sha }}
+
+    # - name: Build Docker and push Image
+    #   run: |
+    #     # cat .github/MICROSERVICES_LIST/microservices_list.txt
+    #     # IFS=$'\n' read -d '' -ra microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
+    #     readarray -t microsvc < .github/MICROSERVICES_LIST/microservices_list.txt
+    #     echo $microsvc
+    #     for work_dir in "${microsvc[@]}"; do
+    #       image_name=$(echo "$work_dir" | cut -d'/' -f1)
+    #       echo $work_dir
+    #       echo $image_name
+    #       docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f ./build/maven/Dockerfile --build-arg WORK_DIR=$work_dir .
+    #       docker push $DOCKER_USERNAME/$image_name:$GITHUB_SHA
+    #     done
+    #   env:
+    #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    #     GITHUB_SHA: ${{ github.sha }}
