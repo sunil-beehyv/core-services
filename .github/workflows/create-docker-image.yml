@@ -16,7 +16,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build and push Docker Images
       run: |
-        config_file=build/build-config.yml
+        # config_file=build/build-config.yml
         while IFS= read -r -d '' config_file; do
           config=$(cat "$config_file")
           name=$(echo "$config" | yq eval '.name' -)
@@ -33,7 +33,7 @@ jobs:
             
             docker build -t "$DOCKER_USERNAME/$image_name:$GITHUB_SHA" -f "$dockerfile" --build-arg WORK_DIR=$work_dir
           done
-        done < <(find . -name 'build/build-config.yml' -print0)
+        done < <(find ./build -name 'build-config.yml' -print0)
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         GITHUB_SHA: ${{ github.sha }}
