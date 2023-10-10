@@ -13,11 +13,11 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build and push Docker images
       run: |
-        docker build -t $DOCKER_USERNAME/$'image-name':$tag -f $dockerfile --build-arg WORK_DIR=$'work-dir' .
+        docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir .
         docker push $DOCKER_USERNAME/$image_name:$tag
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        work-dir: egove-access-control
-        image-name: egov-access-control
+        work_dir: egove-access-control
+        image_name: egov-access-control
         dockerfile: build/maven/Dockerfile
         tag: ${{ github.sha }}
