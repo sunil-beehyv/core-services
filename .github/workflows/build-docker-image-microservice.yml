@@ -20,4 +20,4 @@ jobs:
         work_dir: egov-accesscontrol
         image_name: egov-accesscontrol
         dockerfile: build/maven/Dockerfile
-        tag: ${{ github.sha }}
+        tag: ${{ github.run_number }}
