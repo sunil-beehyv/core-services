@@ -22,7 +22,7 @@ jobs:
       run: pip3 install yq
     - name: Build and push Docker images
       run: |
-        working_dir=$(pwd)
+        home_dir=$(pwd)
         config_file=build/build-config.yml
         microservices=$(yq ".config | length" "$config_file")
         for ((count = 0; count < $microservices; count++)); do
@@ -34,11 +34,13 @@ jobs:
             dockerfile=$(yq --argjson c1 "$count" --argjson c2 "$count2" '.config[$c1].build[$c2]."dockerfile"' "$config_file" | tr -d '"')
             
             if [ "$dockerfile" = "null" ]; then
-              continue
-              dockerfile=$work_dir/Dockerfile
+              cd $work_dir
+              docker build -t $DOCKER_USERNAME/$image_name:$tag -f Dockerfile .
+              cd $home_dir
+            else
+              echo $pwd
+              docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir .
             fi
-            echo $pwd
-            docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir .
             docker push $DOCKER_USERNAME/$image_name:$tag
             cd $working_dir
           done
