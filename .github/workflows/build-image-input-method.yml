@@ -1,0 +1,37 @@
+name: Build and push Docker images using manual input for individual microservices
+on:
+  workflow_dispatch:
+    inputs:
+      work_dir:
+        description: 'Working Directory path relative from root'     
+        required: true
+      image_name:
+        description: 'Image name to be built'     
+        required: true
+      dockerfile:
+        description: 'Dockerfile path'     
+        required: false #Not required if Dockerfile is within the work_dir i.e working directory 
+jobs:
+  build_push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    - name: Docker Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push Docker images
+      run: |
+        if [ -n ${{ inputs.dockerfile }} ]; then
+          dockerfile=${{ inputs.work_dir }}/Dockerfile
+        else
+          dockerfile=${{ inputs.dockerfile }}
+        fi
+        
+        docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f $dockerfile --build-arg WORK_DIR=${{ inputs.work_dir }} .
+        docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        tag: ${{ github.run_number }}
