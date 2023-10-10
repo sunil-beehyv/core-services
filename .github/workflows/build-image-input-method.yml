@@ -25,7 +25,7 @@ jobs:
     - name: Build and push Docker images
       run: |
         home_dir=$(pwd)
-        if [ ${{ github.event.inputs.dockerfile != '' }} ]; then
+        if [ ${{ github.event.inputs.dockerfile == '' }} ]; then
         echo "HI"
           # cd ${{ inputs.work_dir }}
           # docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile .
