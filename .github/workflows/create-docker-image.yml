@@ -29,20 +29,20 @@ jobs:
           images_number=$(yq ".config[$count].build | length" "$config_file")
           
           for ((count2 = 0; count2 < $images_number; count2++)); do
-            work_dir=(yq '.config[$count].build[$count2]."work-dir"' "$config_file")
-            image_name=(yq '.config[$count].build[$count2]."image-name"' "$config_file")
-            dockerfile=(yq '.config[$count].build[$count2]."dockerfile"' "$config_file")
-
+            work_dir=$(yq '.config[$count].build[$count2]."work-dir"' "$config_file")
+            image_name=$(yq '.config[$count].build[$count2]."image-name"' "$config_file")
+            dockerfile=$(yq '.config[$count].build[$count2]."dockerfile"' "$config_file")
+            
             if [ "$dockerfile" = "null" ]; then
-              docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA --build-arg WORK_DIR=$work_dir .
+              echo "docker build -t $DOCKER_USERNAME/$image_name:$tag --build-arg WORK_DIR=$work_dir ."
             else
-              docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f $dockerfile --build-arg WORK_DIR=$work_dir .
+              echo "docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir ."
             fi
           done
         done
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        GITHUB_SHA: ${{ github.sha }}
+        tag: ${{ github.run_number }}
     # - name: Build Docker and push Image
     #   run: |
     #     # cat .github/MICROSERVICES_LIST/microservices_list.txt
