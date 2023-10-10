@@ -1,4 +1,4 @@
-name: "Create Docker images for microservices and push them to Docker Hub"
+name: "All Microservices - Build Docker images for microservices and push them to Docker Hub"
 
 on: [workflow_dispatch]
 
