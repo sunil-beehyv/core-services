@@ -22,6 +22,7 @@ jobs:
       run: pip3 install yq
     - name: Build and push Docker images
       run: |
+        working_dir=$(pwd)
         config_file=build/build-config.yml
         microservices=$(yq ".config | length" "$config_file")
         for ((count = 0; count < $microservices; count++)); do
@@ -37,6 +38,7 @@ jobs:
             fi
             docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir .
             docker push $DOCKER_USERNAME/$image_name:$tag
+            cd $working_dir
           done
         done
       env:
