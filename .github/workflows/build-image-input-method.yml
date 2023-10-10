@@ -34,4 +34,4 @@ jobs:
         docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        tag: ${{ github.run_number }}
+        tag: ${{ github.sha }}
