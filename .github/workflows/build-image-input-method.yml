@@ -25,12 +25,10 @@ jobs:
     - name: Build and push Docker images
       run: |
         if [ -n ${{ inputs.dockerfile }} ]; then
-          dockerfile=${{ inputs.dockerfile }}
+          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }}  --build-arg WORK_DIR=${{ inputs.work_dir }} .
         else
-          dockerfile=${{ inputs.work_dir }}/Dockerfile
+          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.work_dir }}/Dockerfile --build-arg WORK_DIR=${{ inputs.work_dir }} .
         fi
-        
-        docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f $dockerfile --build-arg WORK_DIR=${{ inputs.work_dir }} .
         docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
