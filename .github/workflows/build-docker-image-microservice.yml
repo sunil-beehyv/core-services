@@ -17,7 +17,7 @@ jobs:
         docker push $DOCKER_USERNAME/$image_name:$tag
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        work_dir: egov-access-control
-        image_name: egov-access-control
+        work_dir: egov-accesscontrol
+        image_name: egov-accesscontrol
         dockerfile: build/maven/Dockerfile
         tag: ${{ github.sha }}
