@@ -29,9 +29,11 @@ jobs:
           images_number=$(yq ".config[$count].build | length" "$config_file")
           
           for ((count2 = 0; count2 < $images_number; count2++)); do
-            work_dir=$(yq '.config[$count].build[$count2]."work-dir"' "$config_file")
-            image_name=$(yq '.config[$count].build[$count2]."image-name"' "$config_file")
-            dockerfile=$(yq '.config[$count].build[$count2]."dockerfile"' "$config_file")
+            c1=$count
+            c2=$count2
+            work_dir=$(yq '.config[$c1].build[$c2]."work-dir"' "$config_file")
+            image_name=$(yq '.config[$c1].build[$c2]."image-name"' "$config_file")
+            dockerfile=$(yq '.config[$c1].build[$c2]."dockerfile"' "$config_file")
             
             if [ "$dockerfile" = "null" ]; then
               echo "docker build -t $DOCKER_USERNAME/$image_name:$tag --build-arg WORK_DIR=$work_dir ."
