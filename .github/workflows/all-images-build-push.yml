@@ -35,7 +35,7 @@ jobs:
             image_name=$(yq --argjson c1 "$count" --argjson c2 "$count2" '.config[$c1].build[$c2]."image-name"' "$config_file" | tr -d '"')
             dockerfile=$(yq --argjson c1 "$count" --argjson c2 "$count2" '.config[$c1].build[$c2]."dockerfile"' "$config_file" | tr -d '"')
             echo $dockerfile
-            if [ '$dockerfile' == null ]; then
+            if [ $dockerfile == null ]; then
               echo "If"
               cd $work_dir
               # docker build -t $DOCKER_USERNAME/$image_name:$tag -f Dockerfile.
