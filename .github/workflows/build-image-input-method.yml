@@ -30,7 +30,6 @@ jobs:
           docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile .
           cd $home_dir
         else
-          echo "Hi"
           docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }} --build-arg WORK_DIR=${{ inputs.work_dir }} .
         fi
         docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
