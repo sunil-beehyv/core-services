@@ -27,12 +27,14 @@ jobs:
         home_dir=$(pwd)
         if [ ${{ github.event.inputs.dockerfile }} == '' ]; then
           cd ${{ inputs.work_dir }}
-          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile .
+          echo "If"
+          # docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile .
           cd $home_dir
         else
-          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }} --build-arg WORK_DIR=${{ inputs.work_dir }} .
+          echo "Else"
+          # docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }} --build-arg WORK_DIR=${{ inputs.work_dir }} .
         fi
-        docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
+        # docker push $DOCKER_USERNAME/${{ inputs.image_name }}:$tag
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         tag: ${{ github.sha }}
