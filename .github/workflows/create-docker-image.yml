@@ -36,6 +36,7 @@ jobs:
             if [ "$dockerfile" = "null" ]; then
               dockerfile=$work_dir/Dockerfile
             fi
+            echo $pwd
             docker build -t $DOCKER_USERNAME/$image_name:$tag -f $dockerfile --build-arg WORK_DIR=$work_dir .
             docker push $DOCKER_USERNAME/$image_name:$tag
             cd $working_dir
