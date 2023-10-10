@@ -26,7 +26,8 @@ jobs:
       run: |
         cd ${{ inputs.work_dir }}
         if [ ${{ github.event.inputs.dockerfile != '' }} ]; then
-          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.work_dir }}/Dockerfile  --build-arg WORK_DIR=${{ inputs.work_dir }} .
+          docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile  
+          # --build-arg WORK_DIR=${{ inputs.work_dir }} .
         else
           docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }} --build-arg WORK_DIR=${{ inputs.work_dir }} .
         fi
