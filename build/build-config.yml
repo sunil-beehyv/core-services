@@ -16,9 +16,9 @@ config:
 
   - name: "builds/core-services/egov-common-masters"
     build:
-      # - work-dir: "egov-common-masters"
-      #   image-name: "egov-common-masters"
-      #   dockerfile: "build/maven/Dockerfile"
+      - work-dir: "egov-common-masters"
+        image-name: "egov-common-masters"
+        dockerfile: "build/maven/Dockerfile"
       - work-dir: "egov-common-masters/src/main/resources/db"
         image-name: "egov-common-masters-db"
 
