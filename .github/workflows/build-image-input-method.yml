@@ -25,9 +25,9 @@ jobs:
     - name: Build and push Docker images
       run: |
         if [ -n ${{ inputs.dockerfile }} ]; then
-          dockerfile=${{ inputs.work_dir }}/Dockerfile
-        else
           dockerfile=${{ inputs.dockerfile }}
+        else
+          dockerfile=${{ inputs.work_dir }}/Dockerfile
         fi
         
         docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f $dockerfile --build-arg WORK_DIR=${{ inputs.work_dir }} .
