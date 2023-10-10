@@ -24,10 +24,11 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build and push Docker images
       run: |
-        cd ${{ inputs.work_dir }}
+        home_dir=$(pwd)
         if [ ${{ github.event.inputs.dockerfile != '' }} ]; then
+          cd ${{ inputs.work_dir }}
           docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f Dockerfile .
-          # --build-arg WORK_DIR=${{ inputs.work_dir }} .
+          cd $home_dir
         else
           docker build -t $DOCKER_USERNAME/${{ inputs.image_name }}:$tag -f ${{ inputs.dockerfile }} --build-arg WORK_DIR=${{ inputs.work_dir }} .
         fi
