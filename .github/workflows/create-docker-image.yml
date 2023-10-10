@@ -34,9 +34,9 @@ jobs:
             dockerfile=(yq '.config[$count].build[count2]."dockerfile"' "$config_file")
 
             if [ "$dockerfile" = "null" ]; then
-              echo "docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA --build-arg WORK_DIR=$work_dir ."
+              docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA --build-arg WORK_DIR=$work_dir .
             else
-              echo "docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f $dockerfile --build-arg WORK_DIR=$work_dir ."
+              docker build -t $DOCKER_USERNAME/$image_name:$GITHUB_SHA -f $dockerfile --build-arg WORK_DIR=$work_dir .
             fi
           done
         done
