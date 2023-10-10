@@ -27,14 +27,14 @@ jobs:
         for ((count = 0; count < $microservices; count++)); do
           echo "Name: $(yq .config[$count].name "$config_file")"
           images_number=$(yq ".config[$count].build | length" "$config_file")
-          
+          echo $images_number
           for ((count2 = 0; count2 < $images_number; count2++)); do
             c1=$count
             c2=$count2
             echo "$c1 and $c2"
-            work_dir=$(yq '.config[$c1].build[$c2]."work-dir"' "$config_file")
-            image_name=$(yq '.config[$c1].build[$c2]."image-name"' "$config_file")
-            dockerfile=$(yq '.config[$c1].build[$c2]."dockerfile"' "$config_file")
+            work_dir=$(yq --arg c1 "$count" --arg c2 "$count2" '.config[$c1].build[$c2]."work-dir"' "$config_file")
+            image_name=$(yq --arg c1 "$count" --arg c2 "$count2" '.config[$c1].build[$c2]."image-name"' "$config_file")
+            dockerfile=$(yq --arg c1 "$count" --arg c2 "$count2" '.config[$c1].build[$c2]."dockerfile"' "$config_file")
             
             if [ "$dockerfile" = "null" ]; then
               echo "docker build -t $DOCKER_USERNAME/$image_name:$tag --build-arg WORK_DIR=$work_dir ."
