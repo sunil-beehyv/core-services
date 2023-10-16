@@ -1,4 +1,4 @@
-name: Input Method - Build and push Docker images for individual Microservices
+name: Input Method - Build and push Docker images for individual Microservices by taking input
 on:
   workflow_dispatch:
     inputs:
